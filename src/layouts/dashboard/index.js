@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { useSelector } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-
+import { getAuthUserProfile } from "../../redux/actions/auth"
 
 // ----------------------------------------------------------------------
 
@@ -34,16 +34,24 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout() {
+const DashboardLayout = ({ user, getAuthUserProfile }) => {
   const [open, setOpen] = useState(false);
-  const { profile } = useSelector(state => state.user)
+
+ useEffect(async () => {
+     await getAuthUserProfile()
+ }, [])
   return (
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-      <DashboardSidebar profile={profile} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <DashboardSidebar profile={user} isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle>
         <Outlet />
       </MainStyle>
     </RootStyle>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user
+})
+export default connect(mapStateToProps, { getAuthUserProfile })(DashboardLayout)

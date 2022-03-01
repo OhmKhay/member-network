@@ -14,9 +14,33 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAIL,
 	LOGOUT,
+	CLEAR_PROFILE,
+	GET_AUTH_PROFILE,
 } from "./actionTypes";
 import { auth, db } from "../../firebase-config";
+import { getUserProfile } from "./user";
 // import { setAlert } from './alert';
+export const getAuthUserProfile = () => async (dispatch) => {
+	try {
+		
+		onAuthStateChanged(auth, async (currentUser) => {
+			const userSnapshot = await getDoc(doc(db, "users", currentUser?.uid));
+		if (userSnapshot.exists()) {
+			dispatch({
+				type: GET_AUTH_PROFILE,
+				payload: { ...currentUser, ...userSnapshot.data()}
+			});
+		
+		}
+		});
+
+	
+	} catch (error) {
+		console.log("her eis errro:", error);
+	}
+};
+
+
 // Load User
 export const loadUser = () => async (dispatch) => {
 	try {
@@ -75,11 +99,13 @@ export const register =
 				email,
 				password
 			);
+			const { uid } = res.user;
 			// check if user already existed or not
-			const noteSnapshot = await getDoc(doc(db, "users", res.user.uid));
+			const noteSnapshot = await getDoc(doc(db, "users", uid));
 			if (!noteSnapshot.exists()) {
 				// create new user in database
-				await setDoc(doc(db, "users", res.user.uid), {
+				await setDoc(doc(db, "users", uid), {
+				    uid,
 					displayName: `${firstName} ${lastName}`,
 					firstName,
 					lastName,
@@ -111,6 +137,7 @@ export const login = (email, password) => async (dispatch) => {
 		});
 
 		dispatch(loadUser(res));
+		dispatch(getUserProfile(res?.user?.uid))
 	} catch (err) {
 		// const errors = err.response.data.errors;
 
@@ -131,6 +158,7 @@ export const logout = () => async (dispatch) => {
 		await signOut(auth);
 
 		dispatch({ type: LOGOUT });
+		dispatch({ type: CLEAR_PROFILE});
 	} catch (err) {
 		console.log(err);
 	}

@@ -10,28 +10,36 @@ import {
 } from "@mui/material";
 import { useRef, useState, useEffect } from "react"
 
+
 import {
 	ref,
 	uploadBytesResumable,
 	getDownloadURL,
 	getStorage } from "firebase/storage";
-	import { doc, getDoc, updateDoc } from "firebase/firestore";
+	import { doc, updateDoc } from "firebase/firestore";
 	import { db } from "../../firebase-config";
 	
+
+
 const AccountProfile = ({ profile, id }) => {
  
 	const inputRef = useRef(null);
-	const [avatarUrl, setAvatarUrl] = useState( profile?.photoUrl || " ");
+	const [avatarUrl, setAvatarUrl] = useState(" ");
 	const [message, setMessage] = useState("");
+	const [isUpload, setUpload] = useState(false);
+
+	useEffect(() => {
+	 setAvatarUrl(profile?.photoUrl)
+	}, [profile?.photoUrl])
 
 useEffect(async () => {
-  if(avatarUrl !== " ") {
+  if(avatarUrl !== " " && isUpload) {
 	const userRef = doc(db, "users", id);
 	await updateDoc(userRef, {
 		photoUrl: avatarUrl
 	});
   }
-}, [avatarUrl])
+}, [isUpload])
 
 	const handleUploadFile = (event) => {
     
@@ -61,11 +69,9 @@ useEffect(async () => {
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
 					
-				
-					setAvatarUrl(downloadURL)
-				
-
-				
+					setAvatarUrl(downloadURL);
+					setUpload(true)
+			
 				  });
 
 				});

@@ -84,7 +84,7 @@ const AccountPopover = ({ user, profile, logout }) => {
 					}),
 				}}
 			>
-				<Avatar src={profile?.photoUrl} alt="photoURL" />
+				<Avatar src={user?.photoUrl} alt="photoURL" />
 			</IconButton>
 
 			<MenuPopover
@@ -95,7 +95,7 @@ const AccountPopover = ({ user, profile, logout }) => {
 			>
 				<Box sx={{ my: 1.5, px: 2.5 }}>
 					<Typography variant="subtitle1" noWrap>
-						{profile.displayName}
+						{user?.displayName}
 					</Typography>
 					<Typography
 						variant="body2"

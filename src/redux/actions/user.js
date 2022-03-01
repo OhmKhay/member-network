@@ -1,6 +1,9 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { GET_PROFILE } from "./actionTypes";
-import { db } from "../../firebase-config";
+import { doc, getDocs, getDoc, updateDoc, collection } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth"
+import { GET_PROFILE, GET_USERS } from "./actionTypes";
+import { db, auth } from "../../firebase-config";
+
+
 
 export const getUserProfile = (id) => async (dispatch) => {
 	try {
@@ -10,8 +13,24 @@ export const getUserProfile = (id) => async (dispatch) => {
 				type: GET_PROFILE,
 				payload: userSnapshot.data(),
 			});
-			return userSnapshot.data();
+		
 		}
+	} catch (error) {
+		console.log("her eis errro:", error);
+	}
+};
+
+// get all users
+export const getUsers = () => async (dispatch) => {
+	try {
+		    const usersSnapshot = await getDocs(collection(db, "users"));
+
+			const usersList = usersSnapshot.docs.map((doc) => doc.data());
+			dispatch({
+				type: GET_USERS,
+				payload: usersList
+			});
+			
 	} catch (error) {
 		console.log("her eis errro:", error);
 	}

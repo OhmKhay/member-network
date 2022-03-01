@@ -3,12 +3,12 @@ import {
 	PROFILE_ERROR,
 	CLEAR_PROFILE,
 	UPDATE_PROFILE,
-	GET_PROFILES,
+	GET_USERS
 } from "../actions/actionTypes";
 
 const initialState = {
 	profile: null,
-	profiles: [],
+	users: [],
 	loading: true,
 	error: {},
 };
@@ -24,10 +24,10 @@ export const user = (state = initialState, action) => {
 				profile: payload,
 				loading: false,
 			};
-		case GET_PROFILES:
+		case GET_USERS:
 			return {
 				...state,
-				profiles: payload,
+				users: payload,
 				loading: false,
 			};
 		case PROFILE_ERROR:
@@ -41,7 +41,7 @@ export const user = (state = initialState, action) => {
 			return {
 				...state,
 				profile: null,
-				repos: [],
+			
 			};
 		default:
 			return state;

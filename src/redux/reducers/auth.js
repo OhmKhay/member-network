@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGOUT, USER_LOADED } from '../actions/actionTypes';
+import { LOGIN_SUCCESS, LOGOUT, USER_LOADED, GET_AUTH_PROFILE } from '../actions/actionTypes';
 
 const initialState = {
   loading: true,
@@ -18,6 +18,7 @@ export const auth = (state = initialState, action) => {
         isAuthenticated: true
       };
     case USER_LOADED:
+    case GET_AUTH_PROFILE:
       return {
         ...state,
         isAuthenticated: Boolean(payload?.accessToken),

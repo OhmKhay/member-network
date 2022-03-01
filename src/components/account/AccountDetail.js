@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// import * as Yup from "yup";
 import {
 	Box,
 	Button,
@@ -11,6 +12,18 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
+
+// const ProfleSchema = Yup.object().shape({
+// 	firstName: Yup.string()
+// 	.min(2, "Too Short!")
+// 	.max(50, "Too Long!")
+// 	.required("First name required"),
+//  lastName: Yup.string()
+// 	.min(2, "Too Short!")
+// 	.max(50, "Too Long!")
+// 	.required("Last name required"),
+//   email: Yup.string().email("Email must be a valid email address"),
+// })
 
 const states = [
 	{
@@ -27,19 +40,30 @@ const states = [
 	},
 ];
 
-export const AccountProfileDetails = ({ id, updateUserProfile }) => {
+export const AccountProfileDetails = ({ id, profile, updateUserProfile }) => {
 	// const navigate = useNavigate();
 
-	const { profile } = useSelector((state) => state.user)
+	// const { profile } = useSelector((state) => state.user)
+	// const [profile, setProfile] = useState({});
 
-	console.log("here is profileData:", profile)
+
 
 	const [values, setValues] = useState({
-		firstName: profile?.firstName || "",
-		lastName: profile?.lastName || "",
-		email: profile?.email || "",
-		role: profile?.role || "",
+		firstName: "",
+		lastName: "",
+		email: "",
+		role: "",
 	});
+
+	useEffect(() => {
+		setValues({
+			firstName: profile?.firstName,
+			lastName: profile?.lastName,
+			email: profile?.email,
+			role: profile?.role,
+		   })
+	}, [profile])
+
 
 	const handleChange = (event) => {
 		setValues({

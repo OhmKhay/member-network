@@ -20,6 +20,8 @@ const Account = ({ profile, getUserProfile, updateUserProfile }) => {
 		}
 	}, [params.id]);
 
+	console.log("here is profle:", profile)
+
 	return (
 		<Page title="Dashboard: Account | HaoHaa">
 			<Container>
@@ -43,7 +45,9 @@ const Account = ({ profile, getUserProfile, updateUserProfile }) => {
 							</Grid>
 							<Grid item lg={8} md={6} xs={12}>
 								<AccountProfileDetails
+									
 									id={params.id}
+									profile={profile}
 									updateUserProfile={updateUserProfile}
 								/>
 							</Grid>
