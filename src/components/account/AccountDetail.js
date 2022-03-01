@@ -10,6 +10,7 @@ import {
 	TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux"
 
 const states = [
 	{
@@ -26,8 +27,12 @@ const states = [
 	},
 ];
 
-export const AccountProfileDetails = ({ profile, id, updateUserProfile }) => {
-	const navigate = useNavigate();
+export const AccountProfileDetails = ({ id, updateUserProfile }) => {
+	// const navigate = useNavigate();
+
+	const { profile } = useSelector((state) => state.user)
+
+	console.log("here is profileData:", profile)
 
 	const [values, setValues] = useState({
 		firstName: profile?.firstName || "",
@@ -43,14 +48,12 @@ export const AccountProfileDetails = ({ profile, id, updateUserProfile }) => {
 		});
 	};
 	const handleSave = async (e) => {
-		const data = await updateUserProfile({
+	 await updateUserProfile({
 			id,
 			...values,
 		});
-		console.log("her is data:", data);
-		// if (data) {
-		// 	navigate("/dashboard", { replace: true });
-		// }
+		
+		
 	};
 
 	return (

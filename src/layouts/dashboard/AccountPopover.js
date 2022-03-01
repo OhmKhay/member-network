@@ -28,9 +28,10 @@ import { logout } from "../../redux/actions/auth";
 
 // ----------------------------------------------------------------------
 
-const AccountPopover = ({ user, logout }) => {
+const AccountPopover = ({ user, profile, logout }) => {
 	const anchorRef = useRef(null);
 	const [open, setOpen] = useState(false);
+
 
 	const MENU_OPTIONS = [
 		{
@@ -60,8 +61,6 @@ const AccountPopover = ({ user, logout }) => {
 		await logout();
 	};
 
-	console.log("here is user:", user?.email);
-
 	return (
 		<>
 			<IconButton
@@ -85,7 +84,7 @@ const AccountPopover = ({ user, logout }) => {
 					}),
 				}}
 			>
-				<Avatar src={account.photoURL} alt="photoURL" />
+				<Avatar src={profile?.photoUrl} alt="photoURL" />
 			</IconButton>
 
 			<MenuPopover
@@ -96,7 +95,7 @@ const AccountPopover = ({ user, logout }) => {
 			>
 				<Box sx={{ my: 1.5, px: 2.5 }}>
 					<Typography variant="subtitle1" noWrap>
-						{account.displayName}
+						{profile.displayName}
 					</Typography>
 					<Typography
 						variant="body2"
@@ -148,5 +147,6 @@ const AccountPopover = ({ user, logout }) => {
 
 const mapStateToProps = (state) => ({
 	user: state.auth.user,
+	profile: state.user?.profile
 });
 export default connect(mapStateToProps, { logout })(AccountPopover);

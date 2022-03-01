@@ -43,7 +43,6 @@ const Account = ({ profile, getUserProfile, updateUserProfile }) => {
 							</Grid>
 							<Grid item lg={8} md={6} xs={12}>
 								<AccountProfileDetails
-									profile={profile}
 									id={params.id}
 									updateUserProfile={updateUserProfile}
 								/>
