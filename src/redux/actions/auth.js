@@ -24,14 +24,16 @@ export const getAuthUserProfile = () => async (dispatch) => {
 	try {
 		
 		onAuthStateChanged(auth, async (currentUser) => {
+		   if(currentUser) {
 			const userSnapshot = await getDoc(doc(db, "users", currentUser?.uid));
-		if (userSnapshot.exists()) {
-			dispatch({
-				type: GET_AUTH_PROFILE,
-				payload: { ...currentUser, ...userSnapshot.data()}
-			});
-		
-		}
+			if (userSnapshot?.exists()) {
+				dispatch({
+					type: GET_AUTH_PROFILE,
+					payload: { ...currentUser, ...userSnapshot.data()}
+				});
+			
+			}
+		   }
 		});
 
 	
@@ -130,6 +132,8 @@ export const register =
 export const login = (email, password) => async (dispatch) => {
 	try {
 		const res = await signInWithEmailAndPassword(auth, email, password);
+		const noteSnapshot = await getDoc(doc(db, "users", res.user.uid));
+		if (!noteSnapshot.exists()) {
 
 		dispatch({
 			type: LOGIN_SUCCESS,
@@ -138,6 +142,7 @@ export const login = (email, password) => async (dispatch) => {
 
 		dispatch(loadUser(res));
 		dispatch(getUserProfile(res?.user?.uid))
+	}
 	} catch (err) {
 		// const errors = err.response.data.errors;
 
@@ -149,16 +154,18 @@ export const login = (email, password) => async (dispatch) => {
 			type: LOGIN_FAIL,
 		});
 	}
+
 };
 
 // Logout
 
 export const logout = () => async (dispatch) => {
 	try {
-		await signOut(auth);
-
+	
+	
 		dispatch({ type: LOGOUT });
 		dispatch({ type: CLEAR_PROFILE});
+		await signOut(auth);
 	} catch (err) {
 		console.log(err);
 	}

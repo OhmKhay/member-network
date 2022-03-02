@@ -1,6 +1,5 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
@@ -21,7 +20,7 @@ import {
   TablePagination
 } from '@mui/material';
 import { connect } from "react-redux"
-import { getUsers } from "../redux/actions/user"
+import { getUsers, deleteUser } from "../redux/actions/user"
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -62,8 +61,8 @@ function getComparator(order, orderBy) {
 }
 
 function applySortFilter(array, comparator, query) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
+  const stabilizedThis = array?.map((el, index) => [el, index]);
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
@@ -71,10 +70,10 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(array, (_user) => _user.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis?.map((el) => el[0]);
 }
 
-const User = ({ users, getUsers }) => {
+const User = ({ loading, users, getUsers, deleteUser }) => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
@@ -134,7 +133,13 @@ const User = ({ users, getUsers }) => {
 
   const filteredUsers = applySortFilter(users, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
+  const isUserNotFound = filteredUsers?.length === 0;
+
+  if(loading || users?.length < 0) {
+    return <div>
+      loading ...
+    </div>
+  }
 
   return (
     <Page title="User | HaoHaa">
@@ -155,7 +160,7 @@ const User = ({ users, getUsers }) => {
 
         <Card>
           <UserListToolbar
-            numSelected={selected.length}
+            numSelected={selected?.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
           />
@@ -167,19 +172,17 @@ const User = ({ users, getUsers }) => {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={users.length}
-                  numSelected={selected.length}
+                  rowCount={users?.length}
+                  numSelected={selected?.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
+                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    ?.map((row) => {
                       const { uid, displayName, role, email, photoUrl } = row;
-
-
-                      const isItemSelected = selected.indexOf(displayName) !== -1;
+                      const isItemSelected = selected?.indexOf(displayName) !== -1;
 
                       return (
                         <TableRow
@@ -218,7 +221,7 @@ const User = ({ users, getUsers }) => {
                           </TableCell> */}
 
                           <TableCell align="right">
-                            <UserMoreMenu id={uid} />
+                            <UserMoreMenu id={uid} deleteUser={deleteUser} />
                           </TableCell>
                         </TableRow>
                       );
@@ -245,7 +248,7 @@ const User = ({ users, getUsers }) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={users.length}
+            count={users?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -258,7 +261,8 @@ const User = ({ users, getUsers }) => {
 }
 
 const mapStateToProps = (state) => ({
-  users: state.user.users
+  users: state.user.users,
+  loading: state.user.loading
 })
 
-export default connect(mapStateToProps, { getUsers })(User)
+export default connect(mapStateToProps, { getUsers, deleteUser })(User)

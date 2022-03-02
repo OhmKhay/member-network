@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
+import "react-toastify/dist/ReactToastify.css";
 import { store, persistor } from './redux/store';
 //
 import App from './App';

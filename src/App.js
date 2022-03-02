@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useRoutes } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+
 // routes
 import Router from "./routes";
 // theme
@@ -26,6 +28,7 @@ export default function App() {
 	const routing = useRoutes(Router(isAuthenticated));
 	return (
 		<ThemeConfig>
+			<ToastContainer />
 			<ScrollToTop />
 			<GlobalStyles />
 			<BaseOptionChartStyle />

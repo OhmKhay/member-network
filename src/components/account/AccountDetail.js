@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
-
+import { toast } from "react-toastify";
 // const ProfleSchema = Yup.object().shape({
 // 	firstName: Yup.string()
 // 	.min(2, "Too Short!")
@@ -77,6 +77,7 @@ export const AccountProfileDetails = ({ id, profile, updateUserProfile }) => {
 			...values,
 		});
 		
+		toast.success("Profile Updated Successfully!!");
 		
 	};
 

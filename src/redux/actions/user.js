@@ -1,4 +1,4 @@
-import { doc, getDocs, getDoc, updateDoc, collection } from "firebase/firestore";
+import { doc, getDocs, getDoc, updateDoc, collection, deleteDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth"
 import { GET_PROFILE, GET_USERS } from "./actionTypes";
 import { db, auth } from "../../firebase-config";
@@ -58,3 +58,16 @@ export const updateUserProfile =
 			// });
 		}
 	};
+
+export const deleteUser = (id) => async (dispatch) => {
+	try {
+	
+		const userRef = doc(db, "users", id);
+		await deleteDoc(userRef);
+
+		dispatch(getUsers())
+
+	} catch (error) {
+		console.log("here is errro:", error)
+	}
+}

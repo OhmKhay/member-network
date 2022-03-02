@@ -9,8 +9,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { useRef, useState, useEffect } from "react"
-
-
+import { toast } from "react-toastify"
 import {
 	ref,
 	uploadBytesResumable,
@@ -43,6 +42,7 @@ useEffect(async () => {
 
 	const handleUploadFile = (event) => {
     
+		  
             const reader = new FileReader();
             reader.onload = (e) => {
             //   poImg.current = e.target.result;
@@ -59,6 +59,7 @@ useEffect(async () => {
 				  const progress =
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 				  setMessage(`Upload is  ${progress}% done`);
+				  toast.success(`Upload is ${progress}% done`);
 				},
 				(error) => {
 				  // Handle unsuccessful uploads
@@ -71,10 +72,13 @@ useEffect(async () => {
 					
 					setAvatarUrl(downloadURL);
 					setUpload(true)
+					toast.success(`Upload Image Successfully!`)
 			
 				  });
 
 				});
+
+				
 			}
 			
 

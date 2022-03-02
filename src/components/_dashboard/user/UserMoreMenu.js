@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
+import { toast } from 'react-toastify'
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
@@ -9,10 +10,14 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/mat
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu({ id }) {
+export default function UserMoreMenu({ id, deleteUser }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
  
+  const handleDeleteUser = async () => {
+     await deleteUser(id);
+     toast.success("Delete User Successfully!")
+  }
 
   return (
     <>
@@ -30,7 +35,7 @@ export default function UserMoreMenu({ id }) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }} onClick={handleDeleteUser}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
