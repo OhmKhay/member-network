@@ -40,6 +40,7 @@ const DashboardLayout = ({ user, getAuthUserProfile }) => {
  useEffect(async () => {
      await getAuthUserProfile()
  }, [])
+
   return (
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />

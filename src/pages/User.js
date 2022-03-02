@@ -148,14 +148,14 @@ const User = ({ loading, users, getUsers, deleteUser }) => {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button
+          {/* <Button
             variant="contained"
             component={RouterLink}
             to="/dashboard/user/create"
             startIcon={<Icon icon={plusFill} />}
           >
             New User
-          </Button>
+          </Button> */}
         </Stack>
 
         <Card>

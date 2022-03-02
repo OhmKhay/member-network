@@ -4,7 +4,7 @@ import {
 	onAuthStateChanged,
 	signOut,
 } from "firebase/auth";
-
+import { toast } from 'react-toastify'
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import {
 	REGISTER_SUCCESS,
@@ -24,15 +24,21 @@ export const getAuthUserProfile = () => async (dispatch) => {
 	try {
 		
 		onAuthStateChanged(auth, async (currentUser) => {
+			
 		   if(currentUser) {
-			const userSnapshot = await getDoc(doc(db, "users", currentUser?.uid));
-			if (userSnapshot?.exists()) {
+			const userSnapshot = await getDoc(doc(db, "users", currentUser.uid));
+		
+			  const user= userSnapshot.data();
+		
 				dispatch({
 					type: GET_AUTH_PROFILE,
-					payload: { ...currentUser, ...userSnapshot.data()}
+					payload: { ...currentUser, ...user}
 				});
 			
-			}
+			
+		   
+		   } else {
+			   console.log("here is error get auth profile")
 		   }
 		});
 
@@ -46,11 +52,26 @@ export const getAuthUserProfile = () => async (dispatch) => {
 // Load User
 export const loadUser = () => async (dispatch) => {
 	try {
-		onAuthStateChanged(auth, (currentUser) => {
-			dispatch({
-				type: USER_LOADED,
-				payload: currentUser,
-			});
+		onAuthStateChanged(auth, async(currentUser) => {
+		
+		   if(currentUser) {
+			const userSnapshot = await getDoc(doc(db, "users", currentUser?.uid));
+	     
+            if(userSnapshot.exists()) {
+			  
+				dispatch({
+					type: USER_LOADED,
+					payload: currentUser,
+				});
+			} else {
+				
+
+				dispatch({
+					type: AUTH_ERROR
+				})
+			}
+		   }
+		
 		});
 	} catch (err) {
 		dispatch({
@@ -122,6 +143,7 @@ export const register =
 			});
 			dispatch(loadUser(res));
 		} catch (err) {
+			toast.error("User already existed!")
 			dispatch({
 				type: REGISTER_FAIL,
 			});
@@ -132,8 +154,10 @@ export const register =
 export const login = (email, password) => async (dispatch) => {
 	try {
 		const res = await signInWithEmailAndPassword(auth, email, password);
-		const noteSnapshot = await getDoc(doc(db, "users", res.user.uid));
-		if (!noteSnapshot.exists()) {
+		const { uid } = res.user;
+		const noteSnapshot = await getDoc(doc(db, "users", uid));
+	
+		if (noteSnapshot.exists()) {
 
 		dispatch({
 			type: LOGIN_SUCCESS,
@@ -141,14 +165,11 @@ export const login = (email, password) => async (dispatch) => {
 		});
 
 		dispatch(loadUser(res));
-		dispatch(getUserProfile(res?.user?.uid))
+		dispatch(getAuthUserProfile(uid))
+	} else {
+		toast.error("User not exist!")
 	}
 	} catch (err) {
-		// const errors = err.response.data.errors;
-
-		// if (errors) {
-		//   errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
-		// }
 
 		dispatch({
 			type: LOGIN_FAIL,
@@ -161,8 +182,7 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
 	try {
-	
-	
+
 		dispatch({ type: LOGOUT });
 		dispatch({ type: CLEAR_PROFILE});
 		await signOut(auth);

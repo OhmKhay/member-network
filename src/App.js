@@ -19,12 +19,12 @@ import { store } from "./redux/store";
 // ----------------------------------------------------------------------
 
 export default function App() {
+
 	useEffect(() => {
 		store.dispatch(loadUser());
 	}, []);
-
 	const { isAuthenticated } = useSelector((state) => state.auth);
-
+	
 	const routing = useRoutes(Router(isAuthenticated));
 	return (
 		<ThemeConfig>
