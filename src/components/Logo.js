@@ -12,7 +12,7 @@ export default function Logo({ sx }) {
   return (
     <Box
       component="img"
-      src="https://static.haohaa.com/haohaa.png"
+      src="/static/logo/networkbm-logo.png"
       sx={{ width: 120, height: 30, ...sx }}
     />
   );
